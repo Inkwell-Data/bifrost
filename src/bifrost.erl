@@ -29,6 +29,8 @@ default(Expr, Default) ->
 ucs2_to_utf8(String) ->
     erlang:binary_to_list(unicode:characters_to_binary(String, utf8)).
 
+start_link(HookModule, Opts) when is_map(Opts) ->
+    gen_server:start_link(?MODULE, [HookModule, proplists:from_map(Opts)], []);
 start_link(HookModule, Opts) ->
     gen_server:start_link(?MODULE, [HookModule, Opts], []).
 
