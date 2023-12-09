@@ -1,0 +1,4 @@
+[{<<"meck">>,
+  {git,"https://github.com/eproxus/meck.git",
+       {ref,"64034a265deb6c70fde958f1f203177480c1857e"}},
+  0}].
