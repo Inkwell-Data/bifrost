@@ -189,7 +189,7 @@ data_connection(ControlSocket, State) ->
                 clear ->
                     {gen_tcp, DataSocket};
                 private ->
-                    case ssl:ssl_accept(DataSocket,
+                    case ssl:ssl_handshake(DataSocket,
                                         ssl_options(State)) of
                         {ok, SslSocket} ->
                             {ssl, SslSocket};
@@ -276,7 +276,7 @@ ftp_command(_, {_, RawSocket} = Socket, State, auth, Arg) ->
             case string:to_lower(Arg) of
                 "tls" ->
                     respond(Socket, 234, "Command okay."),
-                    case ssl:ssl_accept(RawSocket,
+                    case ssl:ssl_handshake(RawSocket,
                                         ssl_options(State)) of
                         {ok, SslSocket} ->
                             {new_socket,
