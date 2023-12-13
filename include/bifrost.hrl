@@ -33,7 +33,8 @@
   minor_device,
   inode,
   uid,
-  gid
+  gid,
+  name
   }
 ).
 
