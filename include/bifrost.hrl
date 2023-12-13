@@ -20,14 +20,33 @@
           utf8 = false
          }).
 
--record(file_info,
-        {
-          type, % dir or file
-          name,
-          mode,
-          uid,
-          gid,
-          size,
-          mtime,
-          module_info
-         }).
+-record(file_info, {
+  size,
+  type, % device | directory | other | regular | symlink
+  access, % read | write | read_write | none
+  atime,
+  mtime,
+  ctime,
+  mode,
+  links,
+  major_device,
+  minor_device,
+  inode,
+  uid,
+  gid
+  }
+).
+
+% -record(file_info,
+%        {
+%          type, % dir or file
+%          name,
+%          mode,
+%          uid,
+%          gid,
+%          size,
+%          mtime,
+%          module_info
+%         }).
+
+
