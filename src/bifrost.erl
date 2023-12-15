@@ -719,9 +719,9 @@ format_year(Year) ->
 format_time(Hours, Min) ->
     io_lib:format(" ~2.2.0w:~2.2.0w", [Hours, Min]).
 
-format_type(file) -> "-";
+format_type(regular) -> "-";
 format_type(directory) -> "d";
-format_type(dir) -> "d";
+format_type(symlink) -> "-"; %% for the ftp server is just a file
 format_type(_) -> "?".
 
 type_num(file) ->
