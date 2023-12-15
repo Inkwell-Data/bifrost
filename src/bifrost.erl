@@ -29,8 +29,6 @@ default(Expr, Default) ->
 ucs2_to_utf8(String) ->
     erlang:binary_to_list(unicode:characters_to_binary(String, utf8)).
 
-start_link(HookModule, Opts) when is_map(Opts) ->
-    gen_server:start_link(?MODULE, [HookModule, proplists:from_map(Opts)], []);
 start_link(HookModule, Opts) ->
     gen_server:start_link(?MODULE, [HookModule, Opts], []).
 
@@ -615,6 +613,7 @@ parse_input(Input) ->
     {list_to_atom(string:to_lower(Command)), string:join(Args, " ")}.
 
 list_files_to_socket(DataSocket, Files) ->
+    % io:format("[~p]~p ~p", [?MODULE, ?FUNCTION_NAME, Files]),
     lists:map(fun(Info) ->
                       bf_send(DataSocket,
                               ucs2_to_utf8(file_info_to_string(Info)) ++ "\r\n") end,
@@ -622,6 +621,7 @@ list_files_to_socket(DataSocket, Files) ->
     ok.
 
 list_file_names_to_socket(DataSocket, Files) ->
+    % io:format("[~p]~p ~p", [?MODULE, ?FUNCTION_NAME, Files]),
     lists:map(fun(Info) ->
                       bf_send(DataSocket, ucs2_to_utf8(Info#file_info.name)++"\r\n") end,
               Files),
@@ -681,14 +681,18 @@ response_code_string(_) -> "N/A".
 %% Taken from jungerl/ftpd
 
 file_info_to_string(Info) ->
-    format_type(Info#file_info.type) ++
+    Ret = format_type(Info#file_info.type) ++
         format_access(Info#file_info.mode) ++ " " ++
         format_number(type_num(Info#file_info.type), 2, $ ) ++ " " ++
         format_number(Info#file_info.uid,5,$ ) ++ " " ++
         format_number(Info#file_info.gid,5,$ ) ++ " "  ++
         format_number(Info#file_info.size,8,$ ) ++ " " ++
         format_date(Info#file_info.mtime) ++ " " ++
-        Info#file_info.name.
+        Info#file_info.name,
+    Line = list_to_binary(Ret),
+    % io:format("file_info: |~p| ~n", [Line]),
+    Line
+    .
 
 format_mdtm_date({{Year, Month, Day}, {Hours, Mins, Secs}}) ->
     lists:flatten(io_lib:format("~4..0B~2..0B~2..0B~2..0B~2..0B~2..0B",
@@ -716,6 +720,7 @@ format_time(Hours, Min) ->
     io_lib:format(" ~2.2.0w:~2.2.0w", [Hours, Min]).
 
 format_type(file) -> "-";
+format_type(directory) -> "d";
 format_type(dir) -> "d";
 format_type(_) -> "?".
 
