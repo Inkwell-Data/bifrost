@@ -41,6 +41,8 @@ init([HookModule, Opts]) ->
     SslCert = proplists:get_value(ssl_cert, Opts),
     CaSslCert = proplists:get_value(ca_ssl_cert, Opts),
     UTF8 = proplists:get_value(utf8, Opts),
+    error_logger:error_msg("===> server options ~p ~n", [Opts]),
+    error_logger:error_msg("===> ftp listen socket connection backlog value ~p ~n", [BackLog]),
     case listen_socket(Port, [{active, false}, {reuseaddr, true}, list, {backlog, BackLog}]) of
         {ok, Listen} ->
             IpAddress = default(proplists:get_value(ip_address, Opts), get_socket_addr(Listen)),
