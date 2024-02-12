@@ -1,6 +1,6 @@
 {application,bifrost,
              [{description,"Pluggable FTP server"},
-              {vsn,"1"},
+              {vsn,"1.0.1"},
               {registered,[]},
               {applications,[kernel,stdlib]},
               {mod,{bifrost,[]}},

@@ -35,12 +35,13 @@ start_link(HookModule, Opts) ->
 %% gen_server callbacks implementation
 init([HookModule, Opts]) ->
     Port = default(proplists:get_value(port, Opts), 21),
+    BackLog = default(proplists:get_value(backlog, Opts), 50),
     Ssl = default(proplists:get_value(ssl, Opts), false),
     SslKey = proplists:get_value(ssl_key, Opts),
     SslCert = proplists:get_value(ssl_cert, Opts),
     CaSslCert = proplists:get_value(ca_ssl_cert, Opts),
     UTF8 = proplists:get_value(utf8, Opts),
-    case listen_socket(Port, [{active, false}, {reuseaddr, true}, list]) of
+    case listen_socket(Port, [{active, false}, {reuseaddr, true}, list, {backlog, BackLog}]) of
         {ok, Listen} ->
             IpAddress = default(proplists:get_value(ip_address, Opts), get_socket_addr(Listen)),
             InitialState = #connection_state{module=HookModule,
@@ -189,7 +190,7 @@ data_connection(ControlSocket, State) ->
                 clear ->
                     {gen_tcp, DataSocket};
                 private ->
-                    case ssl:ssl_handshake(DataSocket,
+                    case ssl:handshake(DataSocket,
                                         ssl_options(State)) of
                         {ok, SslSocket} ->
                             {ssl, SslSocket};
@@ -276,7 +277,7 @@ ftp_command(_, {_, RawSocket} = Socket, State, auth, Arg) ->
             case string:to_lower(Arg) of
                 "tls" ->
                     respond(Socket, 234, "Command okay."),
-                    case ssl:ssl_handshake(RawSocket,
+                    case ssl:handshake(RawSocket,
                                         ssl_options(State)) of
                         {ok, SslSocket} ->
                             {new_socket,
