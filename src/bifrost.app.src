@@ -1,12 +1,15 @@
 {application, bifrost,
  [
   {description, "Pluggable FTP server"},
-  {vsn, "1.1.0"},
+  {vsn, "1.1.1"},
   {registered, []},
   {applications, [
                   kernel,
                   stdlib
                  ]},
-  {mod, { bifrost, []}},
+  {mod, { bifrost_app, []}},
+  {modules, []},
   {env, []}
  ]}.
+
+
